@@ -22,8 +22,13 @@ router.post('/add', async (req, res) => {
 
 router.get('/', async(req, res) => {
     const links = await pooldb.query('SELECT * FROM links_table');
-    console.log(links);
     res.render('links/list.hbs', { links });
 });
 
+
+router.get('/delete/:id', async (req, res) => {
+    const { id } = req.params;
+    await pooldb.query('DELETE FROM links_table WHERE id = ?', [id]);
+    res.redirect('/links');
+});
 module.exports = router;
