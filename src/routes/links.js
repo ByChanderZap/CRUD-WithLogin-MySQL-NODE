@@ -31,4 +31,30 @@ router.get('/delete/:id', async (req, res) => {
     await pooldb.query('DELETE FROM links_table WHERE id = ?', [id]);
     res.redirect('/links');
 });
+
+
+router.get('/edit/:id', async (req, res) => {
+    const { id } = req.params;
+    const data = await pooldb.query('SELECT * FROM links_table WHERE id = ?', [id]);
+
+    res.render('links/edit', {data: data[0]});
+});
+
+
+
+router.post('/edit/:id', async (req, res) => {
+    const { id } = req.params;
+    const { title, description, url } = req.body;
+
+    const linkEdit = {
+        title,
+        description,
+        url
+    };
+
+    await pooldb.query('UPDATE links_table set ? WHERE id = ?', [linkEdit, id]);
+    res.redirect('/links');
+});
+
+
 module.exports = router;
