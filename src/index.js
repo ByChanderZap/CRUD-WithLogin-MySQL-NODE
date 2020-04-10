@@ -12,7 +12,7 @@ const app = express();
 //Server Settings
 
 app.set('port', process.env.PORT || 4000);
-app.set('views', path.join(__dirname,'views'));
+app.set('views', path.join(__dirname, 'views'));
 
 
 app.engine('.hbs', handle({
@@ -27,13 +27,13 @@ app.set('view engine', '.hbs');
 
 //Middlewares
 app.use(morgan('dev'));
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 
 // Global Variables
 app.use((req, res, next) => {
-    
+
     next();
 })
 
@@ -52,6 +52,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Starting Server
 
-app.listen(app.get('port'), ()=> {
+app.listen(app.get('port'), () => {
     console.log('Server on port ' + app.get('port'));
 });
