@@ -8,7 +8,15 @@ router.get('/add', (req, res) => {
 });
 
 
-router.post('/add', (req, res) => {
+router.post('/add', async (req, res) => {
+    const { title, url, description } = req.body;
+
+    const newLink={
+        title,
+        url,
+        description
+    };
+    await pooldb.query('INSERT INTO links_table set ?', [newLink]);
     res.send('received');
 });
 
