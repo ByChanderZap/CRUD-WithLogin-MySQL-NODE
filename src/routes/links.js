@@ -11,7 +11,7 @@ router.get('/add', (req, res) => {
 router.post('/add', async (req, res) => {
     const { title, url, description } = req.body;
 
-    const newLink={
+    const newLink = {
         title,
         url,
         description
@@ -21,7 +21,7 @@ router.post('/add', async (req, res) => {
     res.redirect('/links')
 });
 
-router.get('/', async(req, res) => {
+router.get('/', async (req, res) => {
     const links = await pooldb.query('SELECT * FROM links_table');
     res.render('links/list.hbs', { links });
 });
@@ -39,7 +39,7 @@ router.get('/edit/:id', async (req, res) => {
     const { id } = req.params;
     const data = await pooldb.query('SELECT * FROM links_table WHERE id = ?', [id]);
 
-    res.render('links/edit', {data: data[0]});
+    res.render('links/edit', { data: data[0] });
 });
 
 
