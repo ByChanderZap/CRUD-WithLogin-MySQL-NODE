@@ -2,32 +2,35 @@ const express = require('express');
 const router = express.Router();
 
 const pooldb = require('../database');
+const { isLoggedIn } = require('../lib/auth');
 
-router.get('/add', (req, res) => {
+
+router.get('/add', isLoggedIn, (req, res) => {
     res.render('links/add')
 });
 
 
-router.post('/add', async (req, res) => {
+router.post('/add', isLoggedIn, async (req, res) => {
     const { title, url, description } = req.body;
 
     const newLink = {
         title,
         url,
-        description
+        description,
+        user_id: req.user.id
     };
     await pooldb.query('INSERT INTO links_table set ?', [newLink]);
     req.flash('success', 'Link saved successfully');
     res.redirect('/links')
 });
 
-router.get('/', async (req, res) => {
-    const links = await pooldb.query('SELECT * FROM links_table');
+router.get('/', isLoggedIn, async (req, res) => {
+    const links = await pooldb.query('SELECT * FROM links_table WHERE user_id = ?', [req.user.id]);
     res.render('links/list.hbs', { links });
 });
 
 
-router.get('/delete/:id', async (req, res) => {
+router.get('/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     await pooldb.query('DELETE FROM links_table WHERE id = ?', [id]);
     req.flash('success', 'Link removed successfully');
@@ -35,7 +38,7 @@ router.get('/delete/:id', async (req, res) => {
 });
 
 
-router.get('/edit/:id', async (req, res) => {
+router.get('/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     const data = await pooldb.query('SELECT * FROM links_table WHERE id = ?', [id]);
 
@@ -44,7 +47,7 @@ router.get('/edit/:id', async (req, res) => {
 
 
 
-router.post('/edit/:id', async (req, res) => {
+router.post('/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     const { title, description, url } = req.body;
 
